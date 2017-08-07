@@ -1,7 +1,7 @@
-var bannerFn=function (option) {
-    var size=option.size.split(",");
-    var id=option.id;
-    var tar=option.container;
+var bannerFn = function (option) {
+    var size = option.size.split(",");
+    var id = option.id;
+    var tar = option.container;
     //up is option about
     var tarBox = document.querySelector(tar);
     var mainCellLi;
@@ -30,15 +30,15 @@ var bannerFn=function (option) {
 
     function styleFn() { //轮播的样式
         var css = "#banner-box{}" +
-            ".banner-content{position:relative;width:"+size[0]+"px;height:"+size[1]+"px;overflow:hidden;}" +
-            ".mainCell,.pageCell{margin:0;padding:0;list-style:none;}" +
-            ".mainCell{width:100%;height:100%}" +
-            ".mainCell li{width:100%;height:100%;opacity:0;position:absolute;left:0;top:0;}" +
-            ".mainCell li img{width:100%;height:100%;}" +
-            ".pageCell li{float:left;line-height:20px;width:20px;height:20px;background:#fff;color:red;margin-right:5px;text-align:center;}" +
-            ".pageCell li:hover{cursor: pointer;}" +
-            ".pageCell li.on{color:white;background:#ccc}" +
-            ".pageCell{position:absolute;right:10px;bottom:10px;}";
+            ".banner-content{position:relative;width:" + size[0] + "px;height:" + size[1] + "px;overflow:hidden;}" +
+            ".banner-content .mainCell,.banner-content .pageCell{margin:0;padding:0;list-style:none;}" +
+            ".banner-content .mainCell{width:100%;height:100%}" +
+            ".banner-content .mainCell li{width:100%;height:100%;opacity:0;position:absolute;left:0;top:0;}" +
+            ".banner-content .mainCell li img{width:100%;height:100%;}" +
+            ".banner-content .pageCell li{float:left;line-height:20px;width:20px;height:20px;background:#fff;color:red;margin-right:5px;text-align:center;}" +
+            ".banner-content .pageCell li:hover{cursor: pointer;}" +
+            ".banner-content .pageCell li.on{color:white;background:#ccc}" +
+            ".banner-content .pageCell{position:absolute;right:5px;bottom:6px;}";
         var style = document.createElement('style');
         style.innerHTML = css;
         tarBox.appendChild(style);
@@ -49,10 +49,10 @@ var bannerFn=function (option) {
         var pageCell = "";
         for (var i = 0; i < data.length; i++) {
             if (i == 0) {
-                var mainHtml = "<li style='opacity:1;'><img src=" + data[i].img_url + " /></li>";
+                var mainHtml = "<li style='opacity:1;'><a target='_blank' href='"+data[i].link_url+"'><img src=" + data[i].img_url + " /></a></li>";
                 var pageHtml = "<li class='on'>" + (i + 1) + "</li>";
             } else {
-                var mainHtml = "<li><img src=" + data[i].img_url + " /></li>";
+                var mainHtml = "<li><a target='_blank' href='"+data[i].link_url+"'><img src=" + data[i].img_url + " /></a></li>";
                 var pageHtml = "<li>" + (i + 1) + "</li>";
             }
             mainCell += mainHtml;
@@ -109,7 +109,6 @@ var bannerFn=function (option) {
                 var is = li.classList.contains('on');
                 if (is) {
                     which = i;
-                    console.log(which, 'which')
                 }
             })
             return which;
@@ -132,4 +131,54 @@ var bannerFn=function (option) {
     styleFn();
     bannerActionFn();
     autoPlayFn();
+
+    function ajax() {
+        var ajaxData = {
+            type: arguments[0].type || "GET",
+            url: arguments[0].url || "",
+            async: arguments[0].async || "true",
+            data: arguments[0].data || null,
+            dataType: arguments[0].dataType || "text",
+            contentType: arguments[0].contentType || "application/x-www-form-urlencoded",
+            beforeSend: arguments[0].beforeSend || function () {},
+            success: arguments[0].success || function () {},
+            error: arguments[0].error || function () {}
+        }
+        ajaxData.beforeSend()
+        var xhr = createxmlHttpRequest();
+        xhr.responseType = ajaxData.dataType;
+        xhr.open(ajaxData.type, ajaxData.url, ajaxData.async);
+        xhr.setRequestHeader("Content-Type", ajaxData.contentType);
+        xhr.send(convertData(ajaxData.data));
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4) {
+                if (xhr.status == 200) {
+                    ajaxData.success(xhr.response)
+                } else {
+                    ajaxData.error()
+                }
+            }
+        }
+    }
+
+    function createxmlHttpRequest() {
+        if (window.ActiveXObject) {
+            return new ActiveXObject("Microsoft.XMLHTTP");
+        } else if (window.XMLHttpRequest) {
+            return new XMLHttpRequest();
+        }
+    }
+
+    function convertData(data) {
+        if (typeof data === 'object') {
+            var convertResult = "";
+            for (var c in data) {
+                convertResult += c + "=" + data[c] + "&";
+            }
+            convertResult = convertResult.substring(0, convertResult.length - 1)
+            return convertResult;
+        } else {
+            return data;
+        }
+    }
 };
