@@ -1,7 +1,7 @@
 var tarBox = document.getElementById('banner-box');
 var mainCellLi;
 var pageCellLi;
-var intervalTime=1000;
+var intervalTime=2000;
 var timer;
 var data = [{
         "img_url": "http://ubmcmm.baidustatic.com/media/v1/0f000PiLlDS6d3KnOmCIAf.jpg",
@@ -16,13 +16,30 @@ var data = [{
         "link_url": "http://www.baidu.com"
     }
 ];
+function fadein(ele, opacity, speed) {
+    if (ele) {
+        var v = ele.style.filter.replace("alpha(opacity=", "").replace(")", "") || ele.style.opacity;
+        v < 1 && (v = v * 100);
+        var count = speed / 1000;
+        var avg = count < 2 ? (opacity / count) : (opacity / count - 1);
+        var timer = null;
+        timer = setInterval(function() {
+            if (v < opacity) {
+                v += avg;
+                setOpacity(ele, v);
+            } else {
+                clearInterval(timer);
+            }
+        }, 500);
+    }
+}
 
 function reset() {
     pageCellLi.forEach(function (pli, pi) {
         pli.classList.remove('on');
     })
     mainCellLi.forEach(function (mli, mi) {
-        mli.style.display = 'none';
+        mli.classList.remove('on');
     })
 }
 
@@ -30,7 +47,8 @@ function styleFn() {
     var css = "#banner-box{position:relative;}" +
         ".mainCell,.pageCell{margin:0;padding:0;list-style:none;}" +
         ".mainCell{width:100%;height:100%}" +
-        ".mainCell li{width:100%;height:100%}" +
+        ".mainCell li{width:100%;height:100%;opacity:0;display:none;}" +
+        ".mainCell li.on{opacity:1;display:block;}"+
         ".pageCell li{float:left;line-height:20px;width:20px;height:20px;background:#fff;color:red;margin-right:5px;text-align:center;}" +
         ".pageCell li:hover{cursor: pointer;}" +
         ".pageCell li.on{color:white;background:#ccc}" +
@@ -45,7 +63,7 @@ function bannerHtmlFn() {
     var pageCell = "";
     for (var i = 0; i < data.length; i++) {
         if (i == 0) {
-            var mainHtml = "<li><img src=" + data[i].img_url + " /></li>";
+            var mainHtml = "<li class='on'><img src=" + data[i].img_url + " /></li>";
             var pageHtml = "<li class='on'>" + (i + 1) + "</li>";
         } else {
             var mainHtml = "<li><img src=" + data[i].img_url + " /></li>";
@@ -67,7 +85,7 @@ function bannerActionFn() {
             clearInterval(timer);
             reset();
             e.target.classList.add('on');
-            mainCellLi[i].style.display = 'block';
+            mainCellLi[i].classList.add('on');
         }
         li.onmouseout=function(){
             autoPlayFn();
@@ -95,7 +113,8 @@ function autoPlayFn() {
         }
         reset();
         pageCellLi[i].classList.add('on');
-        mainCellLi[i].style.display = 'block';
+        mainCellLi[i].classList.add('on');
+        fadein
     }
     timer=setInterval(function () {
         nextOn()
