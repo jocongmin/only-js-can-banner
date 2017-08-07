@@ -1,13 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
 </head>
+
 <body>
-    <div class="banner-box" id="banner-box" style="position:relative;width:785px;height:280px;border:1px solid #ddd;overflow:hidden;"></div>
+    <div class="banner-box" id="banner-box" style="width:785px;height:280px;border:1px solid #ddd;">
+        <script src='./js/banner.js'></script>
+        <script>
+            var option = {
+                id: '2878834',
+                container: '#banner-box',
+                size: '785,280'
+            }
+            bannerFn(option);
+        </script>
+    </div>
 </body>
-<script src='./js/banner.js'></script>
+
 </html>
