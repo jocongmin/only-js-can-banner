@@ -8,6 +8,10 @@ var data = [{
         "link_url": "http://www.baidu.com"
     },
     {
+        "img_url": "http://ubmcmm.baidustatic.com/media/v1/0f000AjMbHTgRXO7oX7DD6.png",
+        "link_url": "http://www.baidu.com"
+    },
+    {
         "img_url": "http://ubmcmm.baidustatic.com/media/v1/0f000KXcAEY50TO6L64F9f.jpg",
         "link_url": "http://www.baidu.com"
     },
@@ -16,23 +20,6 @@ var data = [{
         "link_url": "http://www.baidu.com"
     }
 ];
-function fadein(ele, opacity, speed) {
-    if (ele) {
-        var v = ele.style.filter.replace("alpha(opacity=", "").replace(")", "") || ele.style.opacity;
-        v < 1 && (v = v * 100);
-        var count = speed / 1000;
-        var avg = count < 2 ? (opacity / count) : (opacity / count - 1);
-        var timer = null;
-        timer = setInterval(function() {
-            if (v < opacity) {
-                v += avg;
-                setOpacity(ele, v);
-            } else {
-                clearInterval(timer);
-            }
-        }, 500);
-    }
-}
 
 function reset() {
     pageCellLi.forEach(function (pli, pi) {
