@@ -112,7 +112,6 @@ var bannerFn = function(option) {
                     var which = parseInt(this.innerHTML) - 1;
                     if (ie8) {
                         mainCellLi[which].style.display = 'block';
-                        console.log(mainCellLi[which].style.display, 'display')
                         return;
                     }
                     mainCellLi[which].style.opacity = 1;
@@ -142,6 +141,10 @@ var bannerFn = function(option) {
                 }
                 reset();
                 pageCellLi[i].className = 'on';
+                if (ie8) {
+                    mainCellLi[i].style.display = 'block';
+                    return;
+                }
                 fadeInBanner(i);
             }
             autoActTime = setInterval(function() { //轮播自动播放的时间名字
