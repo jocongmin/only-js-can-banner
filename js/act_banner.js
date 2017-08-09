@@ -56,10 +56,10 @@ var bannerFn = function(option) {
             var pageCell = "";
             for (var i = 0; i < data.length; i++) {
                 if (i == 0) {
-                    var mainHtml = "<li style='opacity:1;'><a target='_blank' href='http://" + data[i].link + "'><img alt='" + data[i].alt + "' src='http://" + data[i].resource + "' /></a></li>";
+                    var mainHtml = "<li style='opacity:1;'><a target='" + ((data[i].isblank == 1) ? '_blank' : '') + "' href='http://" + data[i].link + "'><img alt='" + data[i].alt + "' src='" + data[i].resource + "' /></a></li>";
                     var pageHtml = "<li class='on'>" + (i + 1) + "</li>";
                 } else {
-                    var mainHtml = "<li><a target='_blank' href='http://" + data[i].link + "'><img alt='" + data[i].alt + "' src='http://" + data[i].resource + "' /></a></li>";
+                    var mainHtml = "<li><a target='" + ((data[i].isblank == 1) ? '_blank' : '') + "' href='http://" + data[i].link + "'><img alt='" + data[i].alt + "' src='" + data[i].resource + "' /></a></li>";
                     var pageHtml = "<li>" + (i + 1) + "</li>";
                 }
                 mainCell += mainHtml;
