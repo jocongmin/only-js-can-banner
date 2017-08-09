@@ -80,10 +80,7 @@ var bannerFn = function(option) {
             }
             for (var i = 0; i < mainCellLi.length; i++) {
                 if (fadeTime != undefined) clearInterval(fadeTime); //清除原来正在轮播中的元素的定时fadein的opacity
-                if (ie8) {
-                    mainCellLi[i].style.display = 'none';
-                    return;
-                }
+                mainCellLi[i].style.display = 'none';
                 mainCellLi[i].style.opacity = 0;
             }
         }
@@ -110,10 +107,7 @@ var bannerFn = function(option) {
                     reset();
                     this.setAttribute("class", "on");
                     var which = parseInt(this.innerHTML) - 1;
-                    if (ie8) {
-                        mainCellLi[which].style.display = 'block';
-                        return;
-                    }
+                    mainCellLi[which].style.display = 'block';
                     mainCellLi[which].style.opacity = 1;
                 }
                 pageCellLi[n].onmouseout = function() { //mouseout要重新启动轮播的自动播放
@@ -141,10 +135,7 @@ var bannerFn = function(option) {
                 }
                 reset();
                 pageCellLi[i].className = 'on';
-                if (ie8) {
-                    mainCellLi[i].style.display = 'block';
-                    return;
-                }
+                mainCellLi[i].style.display = 'block';
                 fadeInBanner(i);
             }
             autoActTime = setInterval(function() { //轮播自动播放的时间名字
