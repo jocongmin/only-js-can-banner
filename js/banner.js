@@ -1,9 +1,11 @@
 var bannerFn = function(option) {
     var id = option.id;
+    var url = option.url;
     var tar = option.container;
     //up is option about
     var tarBox = document.querySelector(tar);
     var ie8 = (navigator.appName == "Microsoft Internet Explorer" && navigator.appVersion.split(";")[1].replace(/[ ]/g, "") == "MSIE8.0");
+    var ie = (window.navigator.userAgent.indexOf("MSIE") >= 1);
     var mainCellLi;
     var pageCellLi;
     var intervalTime = 2000;
@@ -11,7 +13,7 @@ var bannerFn = function(option) {
     var autoActTime;
     ajax({
         type: "GET",
-        url: "http://192.168.200.100:8889/adversise/Showadversise/" + id + "",
+        url: url + id,
         dataType: "json",
         data: {},
         success: function(res) {
@@ -37,11 +39,12 @@ var bannerFn = function(option) {
                 ".banner-content .mainCell,.banner-content .pageCell{margin:0;padding:0;list-style:none;}" +
                 ".banner-content .mainCell{width:100%;height:100%}" +
                 ".banner-content .mainCell li{width:100%;height:100%;margin:0;padding:0;opacity:0;position:absolute;left:0;top:0;}" +
-                ".banner-content .mainCell li img{width:100%;height:100%;position:relative\0;top:-2px\0;left:-2px\0;}" +
+                ".banner-content .mainCell li img{width:100%;height:100%;}" +
                 ".banner-content .pageCell li{float:left;line-height:20px;width:20px;height:20px;background:#fff;color:red;margin-right:5px;text-align:center;}" +
                 ".banner-content .pageCell li:hover{cursor: pointer;}" +
                 ".banner-content .pageCell li.on{color:white;background:#ccc}" +
                 ".banner-content .pageCell{position:absolute;right:5px;bottom:6px;}";
+            if (ie) css += ".banner-content .mainCell li img{position:relative;top:-2px;left:-2px;}";
             var x = document.createElement('div');
             x.innerHTML = 'x<style>' + css + '</style>';
             var head = document.getElementsByTagName('head')[0];
@@ -109,6 +112,7 @@ var bannerFn = function(option) {
                     var which = parseInt(this.innerHTML) - 1;
                     if (ie8) {
                         mainCellLi[which].style.display = 'block';
+                        console.log(mainCellLi[which].style.display, 'display')
                         return;
                     }
                     mainCellLi[which].style.opacity = 1;
