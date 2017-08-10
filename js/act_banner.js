@@ -99,8 +99,9 @@ var bannerFn = function(option) {
         }
 
         function bannerActionFn() { //page item 的mousever时候的功能
-            mainCellLi = document.querySelectorAll('.mainCell li');
-            pageCellLi = document.querySelectorAll('.pageCell li');
+            mainCellLi = document.querySelectorAll("" + tar + " .mainCell li");
+            pageCellLi = document.querySelectorAll("" + tar + " .pageCell li");
+            console.log(mainCellLi, pageCellLi, 'abced')
             for (var n = 0; n < pageCellLi.length; n++) {
                 pageCellLi[n].onmouseover = function() {
                     clearInterval(autoActTime); //清除轮播自动播放的计时器，轮播停止自动播放功能
