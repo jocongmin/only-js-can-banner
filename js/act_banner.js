@@ -1,3 +1,21 @@
+var bannerData = { //案例数据
+    "res": {
+        "codeArea": {
+            "height": "750",
+            "width": "780"
+        },
+        "materiel": [
+            { "link": "www.baidu.com", "resource": "./img/001.jpg", "isblank": "1" },
+            { "link": "www.baidu.com", "resource": "./img/002.jpg", "isblank": "2" },
+            { "link": "www.baidu.com", "resource": "./img/001.jpg", "isblank": "1" },
+            { "link": "www.baidu.com", "resource": "./img/002.jpg", "isblank": "2" },
+            { "link": "www.baidu.com", "resource": "./img/001.jpg", "isblank": "1" },
+            { "link": "www.baidu.com", "resource": "./img/002.jpg", "isblank": "2" },
+            { "link": "www.baidu.com", "resource": "./img/001.jpg", "isblank": "1" },
+            { "link": "www.baidu.com", "resource": "./img/002.jpg", "isblank": "2" }
+        ]
+    }
+}
 var bannerFn = function(option) {
     var id = option.id;
     var url = option.url;
@@ -11,20 +29,22 @@ var bannerFn = function(option) {
     var intervalTime = 2000;
     var fadeTime;
     var autoActTime;
-    ajax({
-        type: "GET",
-        url: url + id,
-        dataType: "json",
-        data: {},
-        success: function(res) {
-            var $data = eval('(' + res + ')');
-            var mainData = $data.Data;
-            actBannerFn(mainData)
-        },
-        error: function() {
-            console.log("error")
-        }
-    });
+    // ajax({        //从后端请求数据
+    //     type: "GET",
+    //     url: url + id,
+    //     dataType: "json",
+    //     data: {},
+    //     success: function(res) {
+    //         var $data = eval('(' + res + ')');
+    //         var mainData = $data.Data;
+    //         actBannerFn(mainData)
+    //     },
+    //     error: function() {
+    //         console.log("error")
+    //     }
+    // });
+
+    actBannerFn(bannerData.res);
 
     function actBannerFn(mainData) {
         console.log(mainData, 'data')
