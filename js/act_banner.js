@@ -129,17 +129,25 @@ var bannerFn = function(option) {
             mainCellLi = document.querySelectorAll("" + tar + " .mainCell li");
             pageCellLi = document.querySelectorAll("" + tar + " .pageCell li");
             console.log(mainCellLi, pageCellLi, 'abced')
+            var hoverTime;
             for (var n = 0; n < pageCellLi.length; n++) {
                 pageCellLi[n].onmouseover = function() {
                     clearInterval(autoActTime); //清除轮播自动播放的计时器，轮播停止自动播放功能
-                    var idx = this.id;
-                    reset(idx);
-                    this.setAttribute("class", "on");
-                    var which = parseInt(this.innerHTML) - 1;
-                    mainCellLi[which].style.display = 'block';
-                    mainCellLi[which].style.opacity = 1;
+                    var that = this;
+                    var theOn = function() {
+                        var idx = that.id;
+                        reset(idx);
+                        that.setAttribute("class", "on");
+                        var which = parseInt(that.innerHTML) - 1;
+                        mainCellLi[which].style.display = 'block';
+                        mainCellLi[which].style.opacity = 1;
+                    }
+                    hoverTime = setTimeout(function() {
+                        theOn();
+                    }, 200);
                 }
                 pageCellLi[n].onmouseout = function() { //mouseout要重新启动轮播的自动播放
+                    clearTimeout(hoverTime);
                     autoPlayFn();
                 }
             }
