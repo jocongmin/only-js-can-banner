@@ -1,21 +1,21 @@
-var bannerData = { //案例数据
-    "res": {
-        "codeArea": {
-            "height": "750",
-            "width": "780"
-        },
-        "materiel": [
-            { "link": "www.baidu.com", "resource": "./img/001.jpg", "isblank": "1" },
-            { "link": "www.baidu.com", "resource": "./img/002.jpg", "isblank": "2" },
-            { "link": "www.baidu.com", "resource": "./img/001.jpg", "isblank": "1" },
-            { "link": "www.baidu.com", "resource": "./img/002.jpg", "isblank": "2" },
-            { "link": "www.baidu.com", "resource": "./img/001.jpg", "isblank": "1" },
-            { "link": "www.baidu.com", "resource": "./img/002.jpg", "isblank": "2" },
-            { "link": "www.baidu.com", "resource": "./img/001.jpg", "isblank": "1" },
-            { "link": "www.baidu.com", "resource": "./img/002.jpg", "isblank": "2" }
-        ]
-    }
-}
+// var bannerData = { //案例数据
+//     "res": {
+//         "codeArea": {
+//             "height": "750",
+//             "width": "780"
+//         },
+//         "materiel": [
+//             { "link": "www.baidu.com", "resource": "./img/001.jpg", "isblank": "1" },
+//             { "link": "www.baidu.com", "resource": "./img/002.jpg", "isblank": "2" },
+//             { "link": "www.baidu.com", "resource": "./img/001.jpg", "isblank": "1" },
+//             { "link": "www.baidu.com", "resource": "./img/002.jpg", "isblank": "2" },
+//             { "link": "www.baidu.com", "resource": "./img/001.jpg", "isblank": "1" },
+//             { "link": "www.baidu.com", "resource": "./img/002.jpg", "isblank": "2" },
+//             { "link": "www.baidu.com", "resource": "./img/001.jpg", "isblank": "1" },
+//             { "link": "www.baidu.com", "resource": "./img/002.jpg", "isblank": "2" }
+//         ]
+//     }
+// }
 var bannerFn = function(option) {
     var id = option.id;
     var url = option.url;
@@ -29,22 +29,21 @@ var bannerFn = function(option) {
     var intervalTime = 2000;
     var fadeTime;
     var autoActTime;
-    // ajax({        //从后端请求数据
-    //     type: "GET",
-    //     url: url + id,
-    //     dataType: "json",
-    //     data: {},
-    //     success: function(res) {
-    //         var $data = eval('(' + res + ')');
-    //         var mainData = $data.Data;
-    //         actBannerFn(mainData)
-    //     },
-    //     error: function() {
-    //         console.log("error")
-    //     }
-    // });
+    ajax({ //从后端请求数据
+        type: "GET",
+        url: url + id,
+        dataType: "json",
+        data: {},
+        success: function(res) {
+            var $data = eval('(' + res + ')');
+            var mainData = $data.Data;
+            actBannerFn(mainData)
+        },
+        error: function() {
+            console.log("error")
+        }
+    });
 
-    actBannerFn(bannerData.res);
 
     function actBannerFn(mainData) {
         console.log(mainData, 'data')
@@ -77,10 +76,10 @@ var bannerFn = function(option) {
             for (var i = 0; i < data.length; i++) {
                 if (i == 0) {
                     var mainHtml = "<li style='opacity:1;'><a target='" + ((data[i].isblank == 1) ? '_blank' : '') + "' href='http://" + data[i].link + "'><img alt='" + data[i].alt + "' src='" + data[i].resource + "' /></a></li>";
-                    var pageHtml = "<li class='on'>" + (i + 1) + "</li>";
+                    var pageHtml = "<li class='on' id='" + data[i].id + "'>" + (i + 1) + "</li>";
                 } else {
                     var mainHtml = "<li><a target='" + ((data[i].isblank == 1) ? '_blank' : '') + "' href='http://" + data[i].link + "'><img alt='" + data[i].alt + "' src='" + data[i].resource + "' /></a></li>";
-                    var pageHtml = "<li>" + (i + 1) + "</li>";
+                    var pageHtml = "<li id='" + data[i].id + "'>" + (i + 1) + "</li>";
                 }
                 mainCell += mainHtml;
                 pageCell += pageHtml;
@@ -94,7 +93,7 @@ var bannerFn = function(option) {
             tarBox.innerHTML = "<div class='banner-content'>" + mainCell + pageCell + "</div>";
         }
 
-        function reset() { //初始化轮播的内容，这样可以再继续下一个轮播，不影响下一个轮播的正常播放。
+        function reset(idx) { //初始化轮播的内容，这样可以再继续下一个轮播，不影响下一个轮播的正常播放。
             for (var i = 0; i < pageCellLi.length; i++) {
                 pageCellLi[i].setAttribute("class", "");
             }
@@ -103,6 +102,14 @@ var bannerFn = function(option) {
                 mainCellLi[i].style.display = 'none';
                 mainCellLi[i].style.opacity = 0;
             }
+            ajax({ //从后端请求数据
+                type: "GET",
+                url: url + id + "/" + idx,
+                success: function(res) {},
+                error: function() {
+                    console.log("error")
+                }
+            });
         }
 
         function fadeInBanner(i) { //轮播item的渐入显示的功能
@@ -125,7 +132,8 @@ var bannerFn = function(option) {
             for (var n = 0; n < pageCellLi.length; n++) {
                 pageCellLi[n].onmouseover = function() {
                     clearInterval(autoActTime); //清除轮播自动播放的计时器，轮播停止自动播放功能
-                    reset();
+                    var idx = this.id;
+                    reset(idx);
                     this.setAttribute("class", "on");
                     var which = parseInt(this.innerHTML) - 1;
                     mainCellLi[which].style.display = 'block';
@@ -154,7 +162,8 @@ var bannerFn = function(option) {
                 if (i == leng) {
                     i = 0;
                 }
-                reset();
+                var idx = pageCellLi[i].id;
+                reset(idx);
                 pageCellLi[i].className = 'on';
                 mainCellLi[i].style.display = 'block';
                 fadeInBanner(i);
