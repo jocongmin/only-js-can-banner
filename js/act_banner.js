@@ -1,21 +1,3 @@
-// var bannerData = { //案例数据
-//     "res": {
-//         "codeArea": {
-//             "height": "750",
-//             "width": "780"
-//         },
-//         "materiel": [
-//             { "link": "www.baidu.com", "resource": "./img/001.jpg", "isblank": "1" },
-//             { "link": "www.baidu.com", "resource": "./img/002.jpg", "isblank": "2" },
-//             { "link": "www.baidu.com", "resource": "./img/001.jpg", "isblank": "1" },
-//             { "link": "www.baidu.com", "resource": "./img/002.jpg", "isblank": "2" },
-//             { "link": "www.baidu.com", "resource": "./img/001.jpg", "isblank": "1" },
-//             { "link": "www.baidu.com", "resource": "./img/002.jpg", "isblank": "2" },
-//             { "link": "www.baidu.com", "resource": "./img/001.jpg", "isblank": "1" },
-//             { "link": "www.baidu.com", "resource": "./img/002.jpg", "isblank": "2" }
-//         ]
-//     }
-// }
 var bannerFn = function(option) {
     var id = option.id;
     var url = option.url;
@@ -188,9 +170,7 @@ var bannerFn = function(option) {
         bannerHtmlFn();
         styleFn();
         bannerActionFn();
-
         autoPlayFn();
-
     }
 
 
