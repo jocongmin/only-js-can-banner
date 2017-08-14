@@ -8,7 +8,7 @@ var bannerFn = function(option) {
     var ie = (window.navigator.userAgent.indexOf("MSIE") >= 1);
     var mainCellLi;
     var pageCellLi;
-    var intervalTime = 2000;
+    var intervalTime = 3000;
     var fadeTime;
     var autoActTime;
     ajax({ //从后端请求数据
@@ -104,13 +104,12 @@ var bannerFn = function(option) {
                     return;
                 }
                 mainCellLi[i].style.opacity = opacitys;
-            }, 50)
+            }, 80)
         }
 
         function bannerActionFn() { //page item 的mousever时候的功能
             mainCellLi = document.querySelectorAll("" + tar + " .mainCell li");
             pageCellLi = document.querySelectorAll("" + tar + " .pageCell li");
-            console.log(mainCellLi, pageCellLi, 'abced')
             var hoverTime;
             for (var n = 0; n < pageCellLi.length; n++) {
                 pageCellLi[n].onmouseover = function() {
