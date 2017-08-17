@@ -1,4 +1,4 @@
-var bannerFn = function(option) {
+var bannerFn = function (option) {
     var id = option.id;
     var url = option.url;
     var tar = option.container;
@@ -16,12 +16,17 @@ var bannerFn = function(option) {
         url: url + id,
         dataType: "json",
         data: {},
-        success: function(res) {
+        success: function (res) {
             var $data = eval('(' + res + ')');
             var mainData = $data.Data;
-            actBannerFn(mainData)
+            if (!isEmptyObject(mainData)) {
+                tarBox.style.background = "";
+                actBannerFn(mainData)
+            } else {
+                return;
+            }
         },
-        error: function() {
+        error: function () {
             console.log("error")
         }
     });
@@ -87,8 +92,8 @@ var bannerFn = function(option) {
             ajax({ //从后端请求数据
                 type: "GET",
                 url: url + id + "/" + idx,
-                success: function(res) {},
-                error: function() {
+                success: function (res) { },
+                error: function () {
                     console.log("error")
                 }
             });
@@ -97,7 +102,7 @@ var bannerFn = function(option) {
         function fadeInBanner(i) { //轮播item的渐入显示的功能
             if (fadeTime != undefined) clearInterval(fadeTime);
             var opacitys = 0;
-            fadeTime = setInterval(function() {
+            fadeTime = setInterval(function () {
                 opacitys += 0.1;
                 if (opacitys > 1) {
                     clearInterval(fadeTime);
@@ -112,10 +117,10 @@ var bannerFn = function(option) {
             pageCellLi = document.querySelectorAll("" + tar + " .pageCell li");
             var hoverTime;
             for (var n = 0; n < pageCellLi.length; n++) {
-                pageCellLi[n].onmouseover = function() {
+                pageCellLi[n].onmouseover = function () {
                     clearInterval(autoActTime); //清除轮播自动播放的计时器，轮播停止自动播放功能
                     var that = this;
-                    var theOn = function() {
+                    var theOn = function () {
                         var idx = that.id;
                         reset(idx);
                         that.setAttribute("class", "on");
@@ -123,11 +128,11 @@ var bannerFn = function(option) {
                         mainCellLi[which].style.display = 'block';
                         mainCellLi[which].style.opacity = 1;
                     }
-                    hoverTime = setTimeout(function() {
+                    hoverTime = setTimeout(function () {
                         theOn();
                     }, 200);
                 }
-                pageCellLi[n].onmouseout = function() { //mouseout要重新启动轮播的自动播放
+                pageCellLi[n].onmouseout = function () { //mouseout要重新启动轮播的自动播放
                     clearTimeout(hoverTime);
                     autoPlayFn();
                 }
@@ -135,7 +140,7 @@ var bannerFn = function(option) {
         }
 
         function autoPlayFn() { //自动播放的功能，让轮播可以自动播放
-            var which = function() {
+            var which = function () {
                 var which = 0;
                 for (var i = 0; i < pageCellLi.length; i++) {
                     var is = (pageCellLi[i].className == 'on');
@@ -145,7 +150,7 @@ var bannerFn = function(option) {
                 }
                 return which;
             }
-            var nextOn = function() {
+            var nextOn = function () {
                 var i = which() + 1;
                 var leng = pageCellLi.length;
                 if (i == leng) {
@@ -157,7 +162,7 @@ var bannerFn = function(option) {
                 mainCellLi[i].style.display = 'block';
                 fadeInBanner(i);
             }
-            autoActTime = setInterval(function() { //轮播自动播放的时间名字
+            autoActTime = setInterval(function () { //轮播自动播放的时间名字
                 nextOn()
             }, intervalTime)
         }
@@ -171,6 +176,12 @@ var bannerFn = function(option) {
         bannerActionFn();
         autoPlayFn();
     }
+    function isEmptyObject(obj) {
+        for (var key in obj) {
+            return false
+        };
+        return true
+    };
 
 
 
@@ -188,7 +199,7 @@ var bannerFn = function(option) {
         }
 
         //接收 - 第三步
-        xhr.onreadystatechange = function() {
+        xhr.onreadystatechange = function () {
             if (xhr.readyState == 4) {
                 var status = xhr.status;
                 if (status >= 200 && status < 300) {
