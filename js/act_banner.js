@@ -10,40 +10,40 @@ var bannerFn = function (option) {
     var ie = (window.navigator.userAgent.indexOf("MSIE") >= 1);
     var fadeActIs = true;
     var slideActIs = false;
-
-    ajax({ //从后端请求数据
-        type: "GET",
-        url: url + id,
-        dataType: "json",
-        data: {},
-        success: function (res) {
-            var $data = eval('(' + res + ')');
-            var mainData = $data.Data;
-            if (!isEmptyObject(mainData)) {
-                tarBox.style.background = "none";
-                var showType = mainData.baseInfo.showType;
-                if (showType == 1) {
-                    fadeActIs = true;
-                    slideActIs = false;
-                } else if (showType == 2) {
-                    fadeActIs = false;
-                    slideActIs = true;
+    startBaner();
+    function startBaner() {
+        ajax({ //从后端请求数据
+            type: "GET",
+            url: url + id,
+            dataType: "json",
+            data: {},
+            success: function (res) {
+                var $data = eval('(' + res + ')');
+                var mainData = $data.Data;
+                if (!isEmptyObject(mainData)) {
+                    tarBox.style.background = "none";
+                    var showType = mainData.baseInfo.showType;
+                    if (showType == 1) {
+                        fadeActIs = true;
+                        slideActIs = false;
+                    } else if (showType == 2) {
+                        fadeActIs = false;
+                        slideActIs = true;
+                    } else {
+                        fadeActIs = true;
+                        slideActIs = false;
+                    }
+                    actBannerFn(mainData)
                 } else {
-                    fadeActIs = true;
-                    slideActIs = false;
+                    return;
                 }
-                actBannerFn(mainData)
-            } else {
-                return;
+            },
+            error: function () {
             }
-        },
-        error: function () {
-        }
-    });
-
+        });
+    }
 
     function actBannerFn(mainData) {
-        console.log(mainData, 'mainfda')
         var data = mainData.materiel;
         var size = mainData.codeArea;
         var mouseIs = false;
@@ -58,7 +58,7 @@ var bannerFn = function (option) {
         function init() {
             styleFn();
             bannerHtmlFn();
-            baseBox()
+            baseBox();
             function styleFn() { //轮播的样式
                 var css = "" + tar + "{width:" + size.width + "px;height:" + size.height + "px;background:url(./img/loading.gif) no-repeat;border:1px solid #ddd;overflow:hidden;}" +
                     ".banner-content{position:relative;overflow:hidden;width:100%;height:100%}" +
@@ -195,13 +195,13 @@ var bannerFn = function (option) {
                 pageCellLi[n].onmouseout = function () { //mouseout要重新启动轮播的自动播放
                     clearTimeout(hoverTime);
                     mouseIs = false;
-                    if (fadeActIs) autoPlayFn();
-                    if (slideActIs) autoPlaySlide(which + 1);
+                    if (fadeActIs) fadePlayFn();
+                    if (slideActIs) slidePlayFn(which + 1);
                 }
             }
         }
         var appendOnce = false;
-        function autoPlaySlide(startWhich) {
+        function slidePlayFn(startWhich) {  //幻灯片播放效果功能函数
             var on = startWhich;
             if (!appendOnce) {
                 var clone = mainCell.firstChild.cloneNode(true);
@@ -249,7 +249,7 @@ var bannerFn = function (option) {
         }
 
 
-        function autoPlayFn() { //自动播放的功能，让轮播可以自动播放
+        function fadePlayFn() { //渐变幻灯片效果函数
             var which = function () {
                 var which = 0;
                 for (var i = 0; i < pageCellLi.length; i++) {
@@ -282,10 +282,9 @@ var bannerFn = function (option) {
         init();
         mouseActionFn();
         if (fadeActIs) {
-            autoPlayFn();
-        }
-        if (slideActIs) {
-            autoPlaySlide(1);
+            fadePlayFn();
+        } else if (slideActIs) {
+            slidePlayFn(1);
         }
     }
 
