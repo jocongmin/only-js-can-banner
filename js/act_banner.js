@@ -8,8 +8,8 @@ var bannerFn = function (option) {
     var tarBox = document.querySelector(tar);
     var ie8 = (navigator.appName == "Microsoft Internet Explorer" && navigator.appVersion.split(";")[1].replace(/[ ]/g, "") == "MSIE8.0");
     var ie = (window.navigator.userAgent.indexOf("MSIE") >= 1);
-    var autoPlayIs = true;
-    var slideActIs = false;
+    var fadeActIs = false;
+    var slideActIs = true;
 
     ajax({ //从后端请求数据
         type: "GET",
@@ -93,7 +93,6 @@ var bannerFn = function (option) {
 
         function reset(t) { //初始化轮播的内容，这样可以再继续下一个轮播，不影响下一个轮播的正常播放。
             var pre = t - 1;
-            console.log(t, "tttt")
             var idx = pageCellLi[t].id;
             if (t == 0) pre = pageCellLi.length - 1;
             for (var i = 0; i < pageCellLi.length; i++) {
@@ -179,7 +178,7 @@ var bannerFn = function (option) {
                 pageCellLi[n].onmouseout = function () { //mouseout要重新启动轮播的自动播放
                     clearTimeout(hoverTime);
                     mouseIs = false;
-                    if (autoPlayIs) autoPlayFn();
+                    if (fadeActIs) autoPlayFn();
                     if (slideActIs) autoPlaySlide(which + 1);
                 }
             }
@@ -200,10 +199,10 @@ var bannerFn = function (option) {
             mainCell.style.width = (len + 1) * 100 + "%";
             var nextOn = function (on) {
                 if (leftTime != undefined) clearInterval(leftTime);
-                reset(on)
+                reset(on);                                          //实现轮播的页数切换
                 var leftIng = 0;
                 var stop = false;
-                var startWhich = endWidth - itemWidth;
+                var startWhich = endWidth - itemWidth;  //endwidth 是一个轮播过程的结束位置，startwidth是一个轮播过程的开始位置；lefting是轮播过程的渐增变量width
                 var leftIng = 0;
                 var leftTime = setInterval(function () {
                     leftIng += 20;
@@ -213,7 +212,6 @@ var bannerFn = function (option) {
                     }
                     var t = "-" + (leftIng + startWhich) + "px";
                     if ((leftIng + startWhich) >= (allWidth - 20)) {
-                        console.log((leftIng + startWhich), (allWidth - 20), "teststestlk")
                         endWidth = itemWidth;
                         t = "0px";
                     }
@@ -260,9 +258,6 @@ var bannerFn = function (option) {
             }, intervalTime)
         }
 
-
-
-
         if (data.length == 1) {
             bannerHtmlFn();
             styleFn();
@@ -272,7 +267,7 @@ var bannerFn = function (option) {
         styleFn();
         baseBox();
         mouseActionFn();
-        if (autoPlayIs) {
+        if (fadeActIs) {
             autoPlayFn();
         }
         if (slideActIs) {
