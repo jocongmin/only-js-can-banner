@@ -3,11 +3,12 @@ var bannerFn = function (option) {
     var url = option.url;
     var tar = option.container;
     var intervalTime = option.speed;
-    
+
     //up is option about
     var tarBox = document.querySelector(tar);
     var ie8 = (navigator.appName == "Microsoft Internet Explorer" && navigator.appVersion.split(";")[1].replace(/[ ]/g, "") == "MSIE8.0");
     var ie = (window.navigator.userAgent.indexOf("MSIE") >= 1);
+    var autoPlayIs = true;
 
     ajax({ //从后端请求数据
         type: "GET",
@@ -40,11 +41,11 @@ var bannerFn = function (option) {
         var pageCellLi;
 
         function styleFn() { //轮播的样式
-            var css = "#banner-box{width:" + size.width + "px;height:" + size.height + "px;border:1px solid #ddd;overflow:hidden;}" +
+            var css = "" + tar + "{width:" + size.width + "px;height:" + size.height + "px;background:url(./img/loading.gif) no-repeat;border:1px solid #ddd;overflow:hidden;}" +
                 ".banner-content{position:relative;overflow:hidden;width:100%;height:100%}" +
                 ".banner-content .mainCell,.banner-content .pageCell{margin:0;padding:0;list-style:none;}" +
                 ".banner-content .mainCell{width:100%;height:100%}" +
-                ".banner-content .mainCell li{width:100%;height:100%;margin:0;padding:0;opacity:0;position:absolute;left:0;top:0;}" +
+                ".banner-content .mainCell li{width:" + size.width + "px;height:" + size.height + "px;margin:0;padding:0;opacity:0;position:absolute;left:0;top:0;}" +
                 ".banner-content .mainCell li img{width:100%;height:100%;}" +
                 ".banner-content .pageCell li{float:left;line-height:20px;width:20px;height:20px;background:#fff;color:red;margin-right:5px;text-align:center;}" +
                 ".banner-content .pageCell li:hover{cursor: pointer;}" +
@@ -62,10 +63,10 @@ var bannerFn = function (option) {
             var pageCell = "";
             for (var i = 0; i < data.length; i++) {
                 if (i == 0) {
-                    var mainHtml = "<li style='opacity:1;'><a target='" + ((data[i].isblank == 1) ? '_blank' : '') + "' href='http://" + data[i].link + "'><img alt='" + data[i].alt + "' src='" + data[i].resource + "' /></a></li>";
+                    var mainHtml = "<li style='opacity:1;'><a target='" + ((data[i].isblank == 1) ? '_blank' : '') + "' href='" + data[i].link + "'><img alt='" + data[i].alt + "' src='" + data[i].resource + "' /></a></li>";
                     var pageHtml = "<li class='on' id='" + data[i].id + "'>" + (i + 1) + "</li>";
                 } else {
-                    var mainHtml = "<li><a target='" + ((data[i].isblank == 1) ? '_blank' : '') + "' href='http://" + data[i].link + "'><img alt='" + data[i].alt + "' src='" + data[i].resource + "' /></a></li>";
+                    var mainHtml = "<li><a target='" + ((data[i].isblank == 1) ? '_blank' : '') + "' href='" + data[i].link + "'><img alt='" + data[i].alt + "' src='" + data[i].resource + "' /></a></li>";
                     var pageHtml = "<li id='" + data[i].id + "'>" + (i + 1) + "</li>";
                 }
                 mainCell += mainHtml;
@@ -158,7 +159,7 @@ var bannerFn = function (option) {
                 pageCellLi[n].onmouseout = function () { //mouseout要重新启动轮播的自动播放
                     clearTimeout(hoverTime);
                     mouseIs = false;
-                    autoPlayFn();
+                    if (autoPlayIs) autoPlayFn();
                 }
             }
         }
@@ -198,7 +199,7 @@ var bannerFn = function (option) {
         bannerHtmlFn();
         styleFn();
         mouseActionFn();
-        autoPlayFn();
+        if (autoPlayIs) autoPlayFn();
     }
     function isEmptyObject(obj) {
         for (var key in obj) {
