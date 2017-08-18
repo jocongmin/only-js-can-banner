@@ -55,7 +55,7 @@ var bannerFn = function (option) {
         var mainCell;
         var pageCell;
 
-        function init() {
+        function init() {  //初始化轮播的基本结构
             styleFn();
             bannerHtmlFn();
             baseBox();
