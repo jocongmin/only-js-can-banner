@@ -49,13 +49,13 @@ var bannerFn = function (option) {
                 ".banner-content .mainCell,.banner-content .pageCell{margin:0;padding:0;list-style:none;}" +
                 ".banner-content .mainCell{width:100%;height:100%}" +
                 ".banner-content .mainCell li{width:" + size.width + "px;height:" + size.height + "px;margin:0;padding:0;opacity:0;position:absolute;left:0;top:0;}" +
-                ".banner-content .mainCell li img{width:100%;height:100%;}" +
+                ".banner-content .mainCell li img{width:100%;height:100%;margin:0;padding:0;}" +
                 ".banner-content .pageCell li{float:left;line-height:20px;width:20px;height:20px;background:#fff;color:red;margin-right:5px;text-align:center;}" +
                 ".banner-content .pageCell li:hover{cursor: pointer;}" +
                 ".banner-content .pageCell li.on{color:white;background:#ccc}" +
                 ".banner-content .pageCell{position:absolute;right:5px;bottom:6px;}";
-            if (ie) css += ".banner-content .mainCell li img{position:relative;top:-2px;left:-2px;}";
-            if (slideActIs) css += ".banner-content .mainCell li{position:relative;float:left;opacity:1;}"
+            if (ie) css += ".banner-content .mainCell li img{position:relative;top:-2px;left:-2px;";
+            if (slideActIs) css += ".banner-content .mainCell li{position:relative;float:left;opacity:1;}";
             var x = document.createElement('div');
             x.innerHTML = 'x<style>' + css + '</style>';
             var head = document.getElementsByTagName('head')[0];
@@ -169,7 +169,6 @@ var bannerFn = function (option) {
                             mainCellLi[which].style.opacity = 1;
                         } else {
                             var t = "-" + (which * size.width) + "px";
-                            console.log(t, "tttt")
                             mainCell.style.marginLeft = t;
                         }
 
