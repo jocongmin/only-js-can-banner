@@ -8,7 +8,8 @@ var bannerFn = function (option) {
     var tarBox = document.querySelector(tar);
     var ie8 = (navigator.appName == "Microsoft Internet Explorer" && navigator.appVersion.split(";")[1].replace(/[ ]/g, "") == "MSIE8.0");
     var ie = (window.navigator.userAgent.indexOf("MSIE") >= 1);
-    var autoPlayIs = true;
+    var autoPlayIs = false;
+    var slideActIs = true;
 
     ajax({ //从后端请求数据
         type: "GET",
@@ -52,6 +53,7 @@ var bannerFn = function (option) {
                 ".banner-content .pageCell li.on{color:white;background:#ccc}" +
                 ".banner-content .pageCell{position:absolute;right:5px;bottom:6px;}";
             if (ie) css += ".banner-content .mainCell li img{position:relative;top:-2px;left:-2px;}";
+            if (slideActIs) css += ".banner-content .mainCell li{position:relative;float:left;opacity:1;}"
             var x = document.createElement('div');
             x.innerHTML = 'x<style>' + css + '</style>';
             var head = document.getElementsByTagName('head')[0];
@@ -79,6 +81,11 @@ var bannerFn = function (option) {
                 return;
             }
             tarBox.innerHTML = "<div class='banner-content'>" + mainCell + pageCell + "</div>";
+        }
+
+        function baseBox() {
+            mainCellLi = document.querySelectorAll("" + tar + " .mainCell li");
+            pageCellLi = document.querySelectorAll("" + tar + " .pageCell li");
         }
 
         function reset(idx, t) { //初始化轮播的内容，这样可以再继续下一个轮播，不影响下一个轮播的正常播放。
@@ -136,8 +143,7 @@ var bannerFn = function (option) {
         }
 
         function mouseActionFn() { //page item 的mousever时候的功能
-            mainCellLi = document.querySelectorAll("" + tar + " .mainCell li");
-            pageCellLi = document.querySelectorAll("" + tar + " .pageCell li");
+
             var hoverTime;
             for (var n = 0; n < pageCellLi.length; n++) {
                 pageCellLi[n].onmouseover = function () {
@@ -191,6 +197,53 @@ var bannerFn = function (option) {
                 nextOn()
             }, intervalTime)
         }
+
+        function autoPlaySlide() {
+            var on = 0;
+            var mainCell = document.querySelector(".mainCell");
+            console.dir(mainCell, 'mainciel')
+            var clone = mainCell.firstChild.cloneNode(true);
+            console.log(clone, "clone")
+            mainCell.appendChild(clone);
+            var len = mainCellLi.length;
+            var itemWidth = size.width;
+            var allWidth = len * itemWidth;
+            var runWidth = 0;
+            console.log(mainCell, len, itemWidth, "mainCell")
+            mainCell.style.width = (len + 1) * 100 + "%";
+            var nextOn = function (onItem) {
+                if (leftTime != undefined) clearInterval(leftTime);
+                if (runWidth == allWidth) {
+                    runWidth = 0;
+                }
+                runWidth += itemWidth;
+                var leftIng = 0;
+                var stop = false;
+                var leftTime = setInterval(function () {
+                    leftIng += 20;
+                    var startWidth = runWidth - itemWidth;
+                    var ingWidth = startWidth + leftIng;
+                    if (ingWidth >= (runWidth - 20)) {
+                        ingWidth = runWidth;
+                        stop = true;
+                    }
+                    var t = "-" + ingWidth + "px";
+                    mainCell.style.marginLeft = t;
+                    if (stop) {
+                        clearInterval(leftTime)
+                    }
+                }, 15)
+            }
+            autoActTime = setInterval(function () { //轮播自动播放的时间名字
+                on++;
+                console.log(on, "onelment")
+                if (on == (len - 1)) on = -1;
+                nextOn(on);
+            }, intervalTime)
+        }
+
+
+
         if (data.length == 1) {
             bannerHtmlFn();
             styleFn();
@@ -198,8 +251,14 @@ var bannerFn = function (option) {
         }
         bannerHtmlFn();
         styleFn();
+        baseBox();
         mouseActionFn();
-        if (autoPlayIs) autoPlayFn();
+        if (autoPlayIs) {
+            autoPlayFn();
+        }
+        if (slideActIs) {
+            autoPlaySlide();
+        }
     }
     function isEmptyObject(obj) {
         for (var key in obj) {
