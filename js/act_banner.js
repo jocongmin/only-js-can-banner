@@ -40,6 +40,8 @@ var bannerFn = function (option) {
         var autoActTime;
         var mainCellLi;
         var pageCellLi;
+        var mainCell;
+        var pageCell;
 
         function styleFn() { //轮播的样式
             var css = "" + tar + "{width:" + size.width + "px;height:" + size.height + "px;background:url(./img/loading.gif) no-repeat;border:1px solid #ddd;overflow:hidden;}" +
@@ -86,6 +88,8 @@ var bannerFn = function (option) {
         function baseBox() {
             mainCellLi = document.querySelectorAll("" + tar + " .mainCell li");
             pageCellLi = document.querySelectorAll("" + tar + " .pageCell li");
+            mainCell = document.querySelector(".mainCell");
+            pageCell=document.querySelector(".pageCell");
         }
 
         function reset(idx, t) { //初始化轮播的内容，这样可以再继续下一个轮播，不影响下一个轮播的正常播放。
@@ -95,16 +99,18 @@ var bannerFn = function (option) {
                 pageCellLi[i].setAttribute("class", "");
             }
 
-            if (fadeTime != undefined) clearInterval(fadeTime); //清除原来正在轮播中的元素的定时fadein的opacity
-            if (fadeOutTime != undefined) clearInterval(fadeOutTime); //清除原来正在轮播中的元素的定时fadeout的opacity
-            if (mouseIs || ie8) {
-                for (var i = 0; i < mainCellLi.length; i++) {
-                    mainCellLi[i].style.opacity = 0;
-                    mainCellLi[i].style.display = "none";
+            if (!slideActIs) {
+                if (fadeTime != undefined) clearInterval(fadeTime); //清除原来正在轮播中的元素的定时fadein的opacity
+                if (fadeOutTime != undefined) clearInterval(fadeOutTime); //清除原来正在轮播中的元素的定时fadeout的opacity
+                if (mouseIs || ie8) {
+                    for (var i = 0; i < mainCellLi.length; i++) {
+                        mainCellLi[i].style.opacity = 0;
+                        mainCellLi[i].style.display = "none";
+                    }
+                } else {
+                    fadeOutBanner(pre);
+                    mainCellLi[pre].style.display = 'none';
                 }
-            } else {
-                fadeOutBanner(pre);
-                mainCellLi[pre].style.display = 'none';
             }
             ajax({ //从后端请求数据
                 type: "GET",
@@ -145,6 +151,7 @@ var bannerFn = function (option) {
         function mouseActionFn() { //page item 的mousever时候的功能
 
             var hoverTime;
+            var which;
             for (var n = 0; n < pageCellLi.length; n++) {
                 pageCellLi[n].onmouseover = function () {
                     clearInterval(autoActTime); //清除轮播自动播放的计时器，轮播停止自动播放功能
@@ -152,11 +159,18 @@ var bannerFn = function (option) {
                     mouseIs = true;
                     var theOn = function () {
                         var idx = that.id;
-                        var which = parseInt(that.innerHTML) - 1;
+                        which = parseInt(that.innerHTML) - 1;
                         reset(idx, which);
                         that.setAttribute("class", "on");
-                        mainCellLi[which].style.display = 'block';
-                        mainCellLi[which].style.opacity = 1;
+                        if(!slideActIs){
+                            mainCellLi[which].style.display = 'block';
+                            mainCellLi[which].style.opacity = 1;
+                        }else{
+                            var t="-"+(which*size.width)+"px";
+                            console.log(t,"tttt")
+                            mainCell.style.marginLeft = t;
+                        }
+                        
                     }
                     hoverTime = setTimeout(function () {
                         theOn();
@@ -166,53 +180,27 @@ var bannerFn = function (option) {
                     clearTimeout(hoverTime);
                     mouseIs = false;
                     if (autoPlayIs) autoPlayFn();
+                    if(slideActIs) autoPlaySlide(which);
                 }
             }
         }
-
-        function autoPlayFn() { //自动播放的功能，让轮播可以自动播放
-            var which = function () {
-                var which = 0;
-                for (var i = 0; i < pageCellLi.length; i++) {
-                    var is = (pageCellLi[i].className == 'on');
-                    if (is) {
-                        which = i;
-                    }
-                }
-                return which;
+        var appendOnce=false;
+        function autoPlaySlide(startWhich) {
+            var on = startWhich;
+            if(!appendOnce){
+                var clone = mainCell.firstChild.cloneNode(true);
+                mainCell.appendChild(clone);
+                appendOnce=true;
             }
-            var nextOn = function () {
-                var i = which() + 1;
-                var leng = pageCellLi.length;
-                if (i == leng) {
-                    i = 0;
-                }
-                var idx = pageCellLi[i].id;
-                reset(idx, i);
-                pageCellLi[i].className = 'on';
-                mainCellLi[i].style.display = 'block';
-                fadeInBanner(i);
-            }
-            autoActTime = setInterval(function () { //轮播自动播放的时间名字
-                nextOn()
-            }, intervalTime)
-        }
-
-        function autoPlaySlide() {
-            var on = 0;
-            var mainCell = document.querySelector(".mainCell");
-            console.dir(mainCell, 'mainciel')
-            var clone = mainCell.firstChild.cloneNode(true);
-            console.log(clone, "clone")
-            mainCell.appendChild(clone);
+           
             var len = mainCellLi.length;
             var itemWidth = size.width;
             var allWidth = len * itemWidth;
-            var runWidth = 0;
-            console.log(mainCell, len, itemWidth, "mainCell")
+            var runWidth=startWhich*itemWidth;
             mainCell.style.width = (len + 1) * 100 + "%";
-            var nextOn = function (onItem) {
+            var nextOn = function () {
                 if (leftTime != undefined) clearInterval(leftTime);
+                console.log(runWidth,"runWidth")
                 if (runWidth == allWidth) {
                     runWidth = 0;
                 }
@@ -243,6 +231,36 @@ var bannerFn = function (option) {
         }
 
 
+        function autoPlayFn() { //自动播放的功能，让轮播可以自动播放
+            var which = function () {
+                var which = 0;
+                for (var i = 0; i < pageCellLi.length; i++) {
+                    var is = (pageCellLi[i].className == 'on');
+                    if (is) {
+                        which = i;
+                    }
+                }
+                return which;
+            }
+            var nextOn = function () {
+                var i = which() + 1;
+                var leng = pageCellLi.length;
+                if (i == leng) {
+                    i = 0;
+                }
+                var idx = pageCellLi[i].id;
+                reset(idx, i);
+                pageCellLi[i].className = 'on';
+                mainCellLi[i].style.display = 'block';
+                fadeInBanner(i);
+            }
+            autoActTime = setInterval(function () { //轮播自动播放的时间名字
+                nextOn()
+            }, intervalTime)
+        }
+
+       
+
 
         if (data.length == 1) {
             bannerHtmlFn();
@@ -257,7 +275,7 @@ var bannerFn = function (option) {
             autoPlayFn();
         }
         if (slideActIs) {
-            autoPlaySlide();
+            autoPlaySlide(0);
         }
     }
     function isEmptyObject(obj) {
