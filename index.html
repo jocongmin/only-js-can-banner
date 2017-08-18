@@ -10,7 +10,11 @@
     <meta http-equiv="x-ua-compatible" content="IE=EmulateIE8">
     <title>Document</title>
 </head>
-
+<style>
+    .banner-box{
+        background:url(./img/loading.gif) no-repeat;
+    }
+</style>
 <body>
     <div class="banner-box" id="banner-box" style="background:url(./img/loading.gif) no-repeat;border:1px solid #ddd;width:780px;height:280px;">
         <script src='./js/act_banner.js'></script>
@@ -18,7 +22,8 @@
             var option = {
                 id: '12',
                 url: 'https://adversise.ename.cn/adversise/showadversise/',
-                container: '#banner-box'
+                container: '#banner-box',
+                speed:3000
             }
             bannerFn(option);
         </script>
@@ -27,9 +32,10 @@
         <script src='./js/act_banner.js'></script>
         <script>
              var option = {
-                 id: '0',
+                 id: '12',
                  url: 'https://adversise.ename.cn/adversise/showadversise/',
-                 container: '#banner-box2'
+                 container: '#banner-box2',
+                 speed:5000
              }
              bannerFn(option);
         </script>

@@ -2,11 +2,12 @@ var bannerFn = function (option) {
     var id = option.id;
     var url = option.url;
     var tar = option.container;
+    var intervalTime = option.speed;
+    
     //up is option about
     var tarBox = document.querySelector(tar);
     var ie8 = (navigator.appName == "Microsoft Internet Explorer" && navigator.appVersion.split(";")[1].replace(/[ ]/g, "") == "MSIE8.0");
     var ie = (window.navigator.userAgent.indexOf("MSIE") >= 1);
-    var intervalTime = 3000;
 
     ajax({ //从后端请求数据
         type: "GET",
@@ -17,20 +18,18 @@ var bannerFn = function (option) {
             var $data = eval('(' + res + ')');
             var mainData = $data.Data;
             if (!isEmptyObject(mainData)) {
-                tarBox.style.background = "";
+                tarBox.style.background = "none";
                 actBannerFn(mainData)
             } else {
                 return;
             }
         },
         error: function () {
-            console.log("error")
         }
     });
 
 
     function actBannerFn(mainData) {
-        console.log(mainData, 'data')
         var data = mainData.materiel;
         var size = mainData.codeArea;
         var mouseIs = false;
@@ -39,8 +38,6 @@ var bannerFn = function (option) {
         var autoActTime;
         var mainCellLi;
         var pageCellLi;
-        console.log(data, 'base data')
-        console.log(size, 'size data')
 
         function styleFn() { //轮播的样式
             var css = "#banner-box{width:" + size.width + "px;height:" + size.height + "px;border:1px solid #ddd;overflow:hidden;}" +
@@ -106,7 +103,6 @@ var bannerFn = function (option) {
                 url: url + id + "/" + idx,
                 success: function (res) { },
                 error: function () {
-                    console.log("error")
                 }
             });
         }
