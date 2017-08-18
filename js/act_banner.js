@@ -89,15 +89,19 @@ var bannerFn = function (option) {
             mainCellLi = document.querySelectorAll("" + tar + " .mainCell li");
             pageCellLi = document.querySelectorAll("" + tar + " .pageCell li");
             mainCell = document.querySelector(".mainCell");
-            pageCell=document.querySelector(".pageCell");
+            pageCell = document.querySelector(".pageCell");
         }
 
-        function reset(idx, t) { //初始化轮播的内容，这样可以再继续下一个轮播，不影响下一个轮播的正常播放。
+        function reset(t) { //初始化轮播的内容，这样可以再继续下一个轮播，不影响下一个轮播的正常播放。
             var pre = t - 1;
+            console.log(t, "tttt")
+            var idx = pageCellLi[t].id;
             if (t == 0) pre = pageCellLi.length - 1;
             for (var i = 0; i < pageCellLi.length; i++) {
                 pageCellLi[i].setAttribute("class", "");
             }
+            pageCellLi[t].className = 'on';
+
 
             if (!slideActIs) {
                 if (fadeTime != undefined) clearInterval(fadeTime); //清除原来正在轮播中的元素的定时fadein的opacity
@@ -158,19 +162,17 @@ var bannerFn = function (option) {
                     var that = this;
                     mouseIs = true;
                     var theOn = function () {
-                        var idx = that.id;
                         which = parseInt(that.innerHTML) - 1;
-                        reset(idx, which);
-                        that.setAttribute("class", "on");
-                        if(!slideActIs){
+                        reset(which);
+                        if (!slideActIs) {
                             mainCellLi[which].style.display = 'block';
                             mainCellLi[which].style.opacity = 1;
-                        }else{
-                            var t="-"+(which*size.width)+"px";
-                            console.log(t,"tttt")
+                        } else {
+                            var t = "-" + (which * size.width) + "px";
+                            console.log(t, "tttt")
                             mainCell.style.marginLeft = t;
                         }
-                        
+
                     }
                     hoverTime = setTimeout(function () {
                         theOn();
@@ -180,53 +182,56 @@ var bannerFn = function (option) {
                     clearTimeout(hoverTime);
                     mouseIs = false;
                     if (autoPlayIs) autoPlayFn();
-                    if(slideActIs) autoPlaySlide(which);
+                    if (slideActIs) autoPlaySlide(which + 1);
                 }
             }
         }
-        var appendOnce=false;
+        var appendOnce = false;
         function autoPlaySlide(startWhich) {
             var on = startWhich;
-            if(!appendOnce){
+            if (!appendOnce) {
                 var clone = mainCell.firstChild.cloneNode(true);
                 mainCell.appendChild(clone);
-                appendOnce=true;
+                appendOnce = true;
             }
-           
+
             var len = mainCellLi.length;
             var itemWidth = size.width;
             var allWidth = len * itemWidth;
-            var runWidth=startWhich*itemWidth;
+            var endWidth = startWhich * itemWidth;
             mainCell.style.width = (len + 1) * 100 + "%";
-            var nextOn = function () {
+            var nextOn = function (on) {
                 if (leftTime != undefined) clearInterval(leftTime);
-                console.log(runWidth,"runWidth")
-                if (runWidth == allWidth) {
-                    runWidth = 0;
-                }
-                runWidth += itemWidth;
+                reset(on)
                 var leftIng = 0;
                 var stop = false;
+                var startWhich = endWidth - itemWidth;
+                var leftIng = 0;
                 var leftTime = setInterval(function () {
                     leftIng += 20;
-                    var startWidth = runWidth - itemWidth;
-                    var ingWidth = startWidth + leftIng;
-                    if (ingWidth >= (runWidth - 20)) {
-                        ingWidth = runWidth;
+                    if (leftIng >= (itemWidth - 20)) {
+                        leftIng = itemWidth;
                         stop = true;
                     }
-                    var t = "-" + ingWidth + "px";
+                    var t = "-" + (leftIng + startWhich) + "px";
+                    if ((leftIng + startWhich) >= (allWidth - 20)) {
+                        console.log((leftIng + startWhich), (allWidth - 20), "teststestlk")
+                        endWidth = itemWidth;
+                        t = "0px";
+                    }
+
                     mainCell.style.marginLeft = t;
                     if (stop) {
                         clearInterval(leftTime)
                     }
                 }, 15)
+
+                endWidth += itemWidth;
             }
             autoActTime = setInterval(function () { //轮播自动播放的时间名字
-                on++;
-                console.log(on, "onelment")
-                if (on == (len - 1)) on = -1;
+                if (on == len) on = 0;
                 nextOn(on);
+                on++;
             }, intervalTime)
         }
 
@@ -248,9 +253,7 @@ var bannerFn = function (option) {
                 if (i == leng) {
                     i = 0;
                 }
-                var idx = pageCellLi[i].id;
-                reset(idx, i);
-                pageCellLi[i].className = 'on';
+                reset(i);
                 mainCellLi[i].style.display = 'block';
                 fadeInBanner(i);
             }
@@ -259,7 +262,7 @@ var bannerFn = function (option) {
             }, intervalTime)
         }
 
-       
+
 
 
         if (data.length == 1) {
@@ -275,7 +278,7 @@ var bannerFn = function (option) {
             autoPlayFn();
         }
         if (slideActIs) {
-            autoPlaySlide(0);
+            autoPlaySlide(1);
         }
     }
     function isEmptyObject(obj) {
