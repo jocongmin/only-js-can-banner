@@ -8,8 +8,8 @@ var bannerFn = function (option) {
     var tarBox = document.querySelector(tar);
     var ie8 = (navigator.appName == "Microsoft Internet Explorer" && navigator.appVersion.split(";")[1].replace(/[ ]/g, "") == "MSIE8.0");
     var ie = (window.navigator.userAgent.indexOf("MSIE") >= 1);
-    var fadeActIs = false;
-    var slideActIs = true;
+    var fadeActIs = true;
+    var slideActIs = false;
 
     ajax({ //从后端请求数据
         type: "GET",
@@ -21,6 +21,17 @@ var bannerFn = function (option) {
             var mainData = $data.Data;
             if (!isEmptyObject(mainData)) {
                 tarBox.style.background = "none";
+                var showType = mainData.baseInfo.showType;
+                if (showType == 1) {
+                    fadeActIs = true;
+                    slideActIs = false;
+                } else if (showType == 2) {
+                    fadeActIs = false;
+                    slideActIs = true;
+                } else {
+                    fadeActIs = true;
+                    slideActIs = false;
+                }
                 actBannerFn(mainData)
             } else {
                 return;
@@ -32,6 +43,7 @@ var bannerFn = function (option) {
 
 
     function actBannerFn(mainData) {
+        console.log(mainData, 'mainfda')
         var data = mainData.materiel;
         var size = mainData.codeArea;
         var mouseIs = false;
@@ -43,52 +55,57 @@ var bannerFn = function (option) {
         var mainCell;
         var pageCell;
 
-        function styleFn() { //轮播的样式
-            var css = "" + tar + "{width:" + size.width + "px;height:" + size.height + "px;background:url(./img/loading.gif) no-repeat;border:1px solid #ddd;overflow:hidden;}" +
-                ".banner-content{position:relative;overflow:hidden;width:100%;height:100%}" +
-                ".banner-content .mainCell,.banner-content .pageCell{margin:0;padding:0;list-style:none;}" +
-                ".banner-content .mainCell{width:100%;height:100%}" +
-                ".banner-content .mainCell li{width:" + size.width + "px;height:" + size.height + "px;margin:0;padding:0;opacity:0;position:absolute;left:0;top:0;}" +
-                ".banner-content .mainCell li img{width:100%;height:100%;border:0;}" +
-                ".banner-content .pageCell li{float:left;line-height:20px;width:20px;height:20px;background:#fff;color:red;margin-right:5px;text-align:center;}" +
-                ".banner-content .pageCell li:hover{cursor: pointer;}" +
-                ".banner-content .pageCell li.on{color:white;background:#ccc}" +
-                ".banner-content .pageCell{position:absolute;right:5px;bottom:6px;}";
-            if (slideActIs) css += ".banner-content .mainCell li{position:relative;float:left;opacity:1;}"
-            var x = document.createElement('div');
-            x.innerHTML = 'x<style>' + css + '</style>';
-            var head = document.getElementsByTagName('head')[0];
-            head.appendChild(x.lastChild);
-        }
+        function init() {
+            styleFn();
+            bannerHtmlFn();
+            baseBox()
+            function styleFn() { //轮播的样式
+                var css = "" + tar + "{width:" + size.width + "px;height:" + size.height + "px;background:url(./img/loading.gif) no-repeat;border:1px solid #ddd;overflow:hidden;}" +
+                    ".banner-content{position:relative;overflow:hidden;width:100%;height:100%}" +
+                    ".banner-content .mainCell,.banner-content .pageCell{margin:0;padding:0;list-style:none;}" +
+                    ".banner-content .mainCell{width:100%;height:100%}" +
+                    ".banner-content .mainCell li{width:" + size.width + "px;height:" + size.height + "px;margin:0;padding:0;opacity:0;position:absolute;left:0;top:0;}" +
+                    ".banner-content .mainCell li img{width:100%;height:100%;border:0;}" +
+                    ".banner-content .pageCell li{float:left;line-height:20px;width:20px;height:20px;background:#fff;color:red;margin-right:5px;text-align:center;}" +
+                    ".banner-content .pageCell li:hover{cursor: pointer;}" +
+                    ".banner-content .pageCell li.on{color:white;background:#ccc}" +
+                    ".banner-content .pageCell{position:absolute;right:5px;bottom:6px;}";
+                if (slideActIs) css += ".banner-content .mainCell li{position:relative;float:left;opacity:1;}"
+                var x = document.createElement('div');
+                x.innerHTML = 'x<style>' + css + '</style>';
+                var head = document.getElementsByTagName('head')[0];
+                head.appendChild(x.lastChild);
+            }
 
-        function bannerHtmlFn() {
-            var mainCell = "";
-            var pageCell = "";
-            for (var i = 0; i < data.length; i++) {
-                if (i == 0) {
-                    var mainHtml = "<li style='opacity:1;'><a target='" + ((data[i].isblank == 1) ? '_blank' : '') + "' href='" + data[i].link + "'><img alt='" + data[i].alt + "' src='" + data[i].resource + "' /></a></li>";
-                    var pageHtml = "<li class='on' id='" + data[i].id + "'>" + (i + 1) + "</li>";
-                } else {
-                    var mainHtml = "<li><a target='" + ((data[i].isblank == 1) ? '_blank' : '') + "' href='" + data[i].link + "'><img alt='" + data[i].alt + "' src='" + data[i].resource + "' /></a></li>";
-                    var pageHtml = "<li id='" + data[i].id + "'>" + (i + 1) + "</li>";
+            function bannerHtmlFn() {
+                var mainCell = "";
+                var pageCell = "";
+                for (var i = 0; i < data.length; i++) {
+                    if (i == 0) {
+                        var mainHtml = "<li style='opacity:1;'><a target='" + ((data[i].isblank == 1) ? '_blank' : '') + "' href='" + data[i].link + "'><img alt='" + data[i].alt + "' src='" + data[i].resource + "' /></a></li>";
+                        var pageHtml = "<li class='on' id='" + data[i].id + "'>" + (i + 1) + "</li>";
+                    } else {
+                        var mainHtml = "<li><a target='" + ((data[i].isblank == 1) ? '_blank' : '') + "' href='" + data[i].link + "'><img alt='" + data[i].alt + "' src='" + data[i].resource + "' /></a></li>";
+                        var pageHtml = "<li id='" + data[i].id + "'>" + (i + 1) + "</li>";
+                    }
+                    mainCell += mainHtml;
+                    pageCell += pageHtml;
                 }
-                mainCell += mainHtml;
-                pageCell += pageHtml;
+                mainCell = "<ul class='mainCell'>" + mainCell + "</ul>";
+                pageCell = "<ul class='pageCell'>" + pageCell + "</ul>";
+                if (data.length == 1) {
+                    tarBox.innerHTML = "<div class='banner-content'>" + mainCell + "</div>";
+                    return;
+                }
+                tarBox.innerHTML = "<div class='banner-content'>" + mainCell + pageCell + "</div>";
             }
-            mainCell = "<ul class='mainCell'>" + mainCell + "</ul>";
-            pageCell = "<ul class='pageCell'>" + pageCell + "</ul>";
-            if (data.length == 1) {
-                tarBox.innerHTML = "<div class='banner-content'>" + mainCell + "</div>";
-                return;
-            }
-            tarBox.innerHTML = "<div class='banner-content'>" + mainCell + pageCell + "</div>";
-        }
 
-        function baseBox() {
-            mainCellLi = document.querySelectorAll("" + tar + " .mainCell li");
-            pageCellLi = document.querySelectorAll("" + tar + " .pageCell li");
-            mainCell = document.querySelector(".mainCell");
-            pageCell = document.querySelector(".pageCell");
+            function baseBox() {
+                mainCellLi = document.querySelectorAll("" + tar + " .mainCell li");
+                pageCellLi = document.querySelectorAll("" + tar + " .pageCell li");
+                mainCell = document.querySelector(".mainCell");
+                pageCell = document.querySelector(".pageCell");
+            }
         }
 
         function reset(t) { //初始化轮播的内容，这样可以再继续下一个轮播，不影响下一个轮播的正常播放。
@@ -211,7 +228,7 @@ var bannerFn = function (option) {
                         stop = true;
                     }
                     var t = "-" + (leftIng + startWhich) + "px";
-                    if ((leftIng + startWhich) >= (allWidth - 20)) {
+                    if ((leftIng + startWhich) >= (allWidth - 20)) {   //当轮播到最后一张的时候要回归第一张的位置
                         endWidth = itemWidth;
                         t = "0px";
                     }
@@ -259,13 +276,10 @@ var bannerFn = function (option) {
         }
 
         if (data.length == 1) {
-            bannerHtmlFn();
-            styleFn();
+            init();
             return;
         }
-        bannerHtmlFn();
-        styleFn();
-        baseBox();
+        init();
         mouseActionFn();
         if (fadeActIs) {
             autoPlayFn();
@@ -274,6 +288,7 @@ var bannerFn = function (option) {
             autoPlaySlide(1);
         }
     }
+
     function isEmptyObject(obj) {
         for (var key in obj) {
             return false
