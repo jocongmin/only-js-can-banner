@@ -114,8 +114,12 @@ var bannerFn = function(option) {
                 pageCell = document.querySelector(".pageCell");
             }
         }
-
+        var countFirst=false;
         function countEachBanner(idx) {
+            if(!countFirst){
+                watchOver[idx]=true;
+                countFirst=true;
+            }
             if (!watchOver[idx]) {
                 watchOver[idx] = true;
                 ajax({ //从后端请求数据
