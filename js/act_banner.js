@@ -24,7 +24,6 @@ var bannerFn = function (option) {
             success: function (res) {
                 var $data = eval('(' + res + ')');
                 var mainData = $data.Data;
-                console.log(mainData)
                 if (!isEmptyObject(mainData)) {
                     tarBox.style.background = "none";
                     var showType = mainData.baseInfo.showType;
@@ -59,7 +58,7 @@ var bannerFn = function (option) {
         var pageCellLi;
         var mainCell;
         var pageCell;
-
+        var watchOver = {};        
         function init() {  //初始化轮播的基本结构
             styleFn();
             bannerHtmlFn();
@@ -136,13 +135,16 @@ var bannerFn = function (option) {
                     mainCellLi[pre].style.display = 'none';
                 }
             }
-            ajax({ //从后端请求数据
-                type: "GET",
-                url: url + id + "/" + idx,
-                success: function (res) { },
-                error: function () {
-                }
-            });
+            if(!watchOver[idx]){
+                watchOver[idx]=true;
+                ajax({ //从后端请求数据
+                    type: "GET",
+                    url: url + id + "/" + idx,
+                    success: function (res) { },
+                    error: function () {
+                    }
+                });
+            }
         }
 
         function fadeOutBanner(i) { //轮播item的渐入显示的功能
