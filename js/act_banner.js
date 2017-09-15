@@ -1,10 +1,9 @@
-
-var bannerFn = function (option) {
+var bannerFn = function(option) {
     var id = option.id;
     var url = option.url;
     var tar = option.container;
     var intervalTime = option.speed;
-    if(intervalTime<=3000) intervalTime=3000;
+    if (intervalTime <= 3000) intervalTime = 3000;
 
     //up is option about
     var tarBox = document.querySelector(tar);
@@ -12,16 +11,17 @@ var bannerFn = function (option) {
     var ie = (window.navigator.userAgent.indexOf("MSIE") >= 1);
     var fadeActIs = true;
     var slideActIs = false;
-    tarBox.style.backgroundImage="url(data:image/gif;base64,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)";
-    tarBox.style.backgroundRepeat="no-repeat"; 
+    tarBox.style.backgroundImage = "url(data:image/gif;base64,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)";
+    tarBox.style.backgroundRepeat = "no-repeat";
     startBaner();
+
     function startBaner() {
         ajax({ //从后端请求数据
             type: "GET",
             url: url + id,
             dataType: "json",
             data: {},
-            success: function (res) {
+            success: function(res) {
                 var $data = eval('(' + res + ')');
                 var mainData = $data.Data;
                 if (!isEmptyObject(mainData)) {
@@ -42,8 +42,7 @@ var bannerFn = function (option) {
                     return;
                 }
             },
-            error: function () {
-            }
+            error: function() {}
         });
     }
 
@@ -58,11 +57,15 @@ var bannerFn = function (option) {
         var pageCellLi;
         var mainCell;
         var pageCell;
-        var watchOver = {};        
-        function init() {  //初始化轮播的基本结构
+        var watchOver = {};
+
+        function init() { //初始化轮播的基本结构
             styleFn();
             bannerHtmlFn();
             baseBox();
+            var idx = pageCell.firstChild.id;
+            countEachBanner(idx);
+
             function styleFn() { //轮播的样式
                 var css = "" + tar + "{width:" + size.Width + "px;height:" + size.Height + "px;border:1px solid #ddd;overflow:hidden;}" +
                     ".banner-content{position:relative;overflow:hidden;width:100%;height:100%}" +
@@ -112,6 +115,18 @@ var bannerFn = function (option) {
             }
         }
 
+        function countEachBanner(idx) {
+            if (!watchOver[idx]) {
+                watchOver[idx] = true;
+                ajax({ //从后端请求数据
+                    type: "GET",
+                    url: url + id + "/" + idx,
+                    success: function(res) {},
+                    error: function() {}
+                });
+            }
+        }
+
         function reset(t) { //初始化轮播的内容，这样可以再继续下一个轮播，不影响下一个轮播的正常播放。
             var pre = t - 1;
             var idx = pageCellLi[t].id;
@@ -135,22 +150,13 @@ var bannerFn = function (option) {
                     mainCellLi[pre].style.display = 'none';
                 }
             }
-            if(!watchOver[idx]){
-                watchOver[idx]=true;
-                ajax({ //从后端请求数据
-                    type: "GET",
-                    url: url + id + "/" + idx,
-                    success: function (res) { },
-                    error: function () {
-                    }
-                });
-            }
+            countEachBanner(idx);
         }
 
         function fadeOutBanner(i) { //轮播item的渐入显示的功能
             if (fadeOutTime != undefined) clearInterval(fadeOutTime);
             var opacitys = 1;
-            fadeOutTime = setInterval(function () {
+            fadeOutTime = setInterval(function() {
                 opacitys -= 0.1;
                 if (opacitys <= 0) {
                     clearInterval(fadeOutTime);
@@ -164,7 +170,7 @@ var bannerFn = function (option) {
         function fadeInBanner(i) { //轮播item的渐入显示的功能
             if (fadeTime != undefined) clearInterval(fadeTime);
             var opacitys = 0;
-            fadeTime = setInterval(function () {
+            fadeTime = setInterval(function() {
                 opacitys += 0.1;
                 if (opacitys > 1) {
                     clearInterval(fadeTime);
@@ -179,11 +185,11 @@ var bannerFn = function (option) {
             var hoverTime;
             var which;
             for (var n = 0; n < pageCellLi.length; n++) {
-                pageCellLi[n].onmouseover = function () {
+                pageCellLi[n].onmouseover = function() {
                     clearInterval(autoActTime); //清除轮播自动播放的计时器，轮播停止自动播放功能
                     var that = this;
                     mouseIs = true;
-                    var theOn = function () {
+                    var theOn = function() {
                         which = parseInt(that.innerHTML) - 1;
                         reset(which);
                         if (!slideActIs) {
@@ -195,11 +201,11 @@ var bannerFn = function (option) {
                         }
 
                     }
-                    hoverTime = setTimeout(function () {
+                    hoverTime = setTimeout(function() {
                         theOn();
                     }, 200);
                 }
-                pageCellLi[n].onmouseout = function () { //mouseout要重新启动轮播的自动播放
+                pageCellLi[n].onmouseout = function() { //mouseout要重新启动轮播的自动播放
                     clearTimeout(hoverTime);
                     mouseIs = false;
                     if (fadeActIs) fadePlayFn();
@@ -208,7 +214,8 @@ var bannerFn = function (option) {
             }
         }
         var appendOnce = false;
-        function slidePlayFn(startWhich) {  //幻灯片播放效果功能函数
+
+        function slidePlayFn(startWhich) { //幻灯片播放效果功能函数
             var on = startWhich;
             if (!appendOnce) {
                 var clone = mainCell.firstChild.cloneNode(true);
@@ -221,21 +228,21 @@ var bannerFn = function (option) {
             var allWidth = len * itemWidth;
             var endWidth = startWhich * itemWidth;
             mainCell.style.width = (len + 1) * 100 + "%";
-            var nextOn = function (on) {
+            var nextOn = function(on) {
                 if (leftTime != undefined) clearInterval(leftTime);
-                reset(on);                                          //实现轮播的页数切换
+                reset(on); //实现轮播的页数切换
                 var leftIng = 0;
                 var stop = false;
-                var startWhich = endWidth - itemWidth;  //endwidth 是一个轮播过程的结束位置，startwidth是一个轮播过程的开始位置；lefting是轮播过程的渐增变量width
+                var startWhich = endWidth - itemWidth; //endwidth 是一个轮播过程的结束位置，startwidth是一个轮播过程的开始位置；lefting是轮播过程的渐增变量width
                 var leftIng = 0;
-                var leftTime = setInterval(function () {
+                var leftTime = setInterval(function() {
                     leftIng += 20;
                     if (leftIng >= (itemWidth - 20)) {
                         leftIng = itemWidth;
                         stop = true;
                     }
                     var t = "-" + (leftIng + startWhich) + "px";
-                    if ((leftIng + startWhich) >= (allWidth - 20)) {   //当轮播到最后一张的时候要回归第一张的位置
+                    if ((leftIng + startWhich) >= (allWidth - 20)) { //当轮播到最后一张的时候要回归第一张的位置
                         endWidth = itemWidth;
                         t = "0px";
                     }
@@ -248,7 +255,7 @@ var bannerFn = function (option) {
 
                 endWidth += itemWidth;
             }
-            autoActTime = setInterval(function () { //轮播自动播放的时间名字
+            autoActTime = setInterval(function() { //轮播自动播放的时间名字
                 if (on == len) on = 0;
                 nextOn(on);
                 on++;
@@ -257,7 +264,7 @@ var bannerFn = function (option) {
 
 
         function fadePlayFn() { //渐变幻灯片效果函数
-            var which = function () {
+            var which = function() {
                 var which = 0;
                 for (var i = 0; i < pageCellLi.length; i++) {
                     var is = (pageCellLi[i].className == 'on');
@@ -267,7 +274,7 @@ var bannerFn = function (option) {
                 }
                 return which;
             }
-            var nextOn = function () {
+            var nextOn = function() {
                 var i = which() + 1;
                 var leng = pageCellLi.length;
                 if (i == leng) {
@@ -277,7 +284,7 @@ var bannerFn = function (option) {
                 mainCellLi[i].style.display = 'block';
                 fadeInBanner(i);
             }
-            autoActTime = setInterval(function () { //轮播自动播放的时间名字
+            autoActTime = setInterval(function() { //轮播自动播放的时间名字
                 nextOn()
             }, intervalTime)
         }
@@ -318,7 +325,7 @@ var bannerFn = function (option) {
         }
 
         //接收 - 第三步
-        xhr.onreadystatechange = function () {
+        xhr.onreadystatechange = function() {
             if (xhr.readyState == 4) {
                 var status = xhr.status;
                 if (status >= 200 && status < 300) {
